@@ -64,7 +64,7 @@ trimActivity<- na.omit(activity)
 
 ```r
 TotalSteps <- aggregate(activity$steps~activity$date, activity,sum)
-hist(TotalSteps$`activity$steps`,breaks= 25, ylab = "Frequency using Count", xlab = "TotalSteps",col="darkgreen")
+hist(TotalSteps$`activity$steps`,breaks= 25, ylab = "Frequency using Count", xlab = "TotalSteps",col="lightgreen")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)
@@ -100,16 +100,27 @@ ggplot(Dailyaverage, aes(Dailyaverage$`activity$interval`, Dailyaverage$`activit
 ```r
 maxsteps<- which.max(Dailyaverage[,2])
 maxinterval<-Dailyaverage[maxsteps[1],1]
+
+paste("The Maximum steps attained interval at :",maxinterval)
 ```
-The Maximum steps attained interval 835
+
+```
+## [1] "The Maximum steps attained interval at : 835"
+```
+
 
 
 ## Imputing missing values
 
 ```r
 TotalNA <- sum(is.na(activity$steps))
+paste("Total Missing Values ",TotalNA)
 ```
-Total Missing Values 2304
+
+```
+## [1] "Total Missing Values  2304"
+```
+
 
 ```r
 Stactivity <- activity

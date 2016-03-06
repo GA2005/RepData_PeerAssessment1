@@ -28,7 +28,7 @@ trimActivity<- na.omit(activity)
 ## What is mean total number of steps taken per day?
 ```{r}
 TotalSteps <- aggregate(activity$steps~activity$date, activity,sum)
-hist(TotalSteps$`activity$steps`,breaks= 25, ylab = "Frequency using Count", xlab = "TotalSteps",col="darkgreen")
+hist(TotalSteps$`activity$steps`,breaks= 25, ylab = "Frequency using Count", xlab = "TotalSteps",col="lightgreen")
 meanSteps<- mean(TotalSteps$`activity$steps`)
 medianSteps<- median(TotalSteps$`activity$steps`)
 paste("mean: ",  meanSteps)
@@ -43,15 +43,18 @@ ggplot(Dailyaverage, aes(Dailyaverage$`activity$interval`, Dailyaverage$`activit
 maxsteps<- which.max(Dailyaverage[,2])
 maxinterval<-Dailyaverage[maxsteps[1],1]
 
+paste("The Maximum steps attained interval at :",maxinterval)
+
 ```
-The Maximum steps attained interval `r maxinterval`
+
 
 
 ## Imputing missing values
 ```{r}
 TotalNA <- sum(is.na(activity$steps))
+paste("Total Missing Values ",TotalNA)
 ```
-Total Missing Values `r TotalNA`
+
 ```{r}
 Stactivity <- activity
 Stactivity$steps <- impute(activity$steps,mean)
