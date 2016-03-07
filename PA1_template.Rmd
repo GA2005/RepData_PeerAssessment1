@@ -28,9 +28,12 @@ trimActivity<- na.omit(activity)
 ## What is mean total number of steps taken per day?
 ```{r}
 TotalSteps <- aggregate(activity$steps~activity$date, activity,sum)
-hist(TotalSteps$`activity$steps`,breaks= 25, ylab = "Frequency using Count", xlab = "TotalSteps",col="lightgreen")
+hist(TotalSteps$`activity$steps`,breaks= 25, ylab = "Frequency using Count", xlab = "TotalSteps",col="lightgreen",main="Historgram of TotalSteps per day")
 meanSteps<- mean(TotalSteps$`activity$steps`)
 medianSteps<- median(TotalSteps$`activity$steps`)
+abline(v=meanSteps,col="red",lwd=2)
+abline(v=medianSteps,col="magenta",lwd=1)
+
 paste("mean: ",  meanSteps)
 paste("median: ", medianSteps)
 ```
@@ -38,11 +41,15 @@ paste("median: ", medianSteps)
 
 ## What is the average daily activity pattern?
 ```{r}
+#Take the dailyaverage pattern
 Dailyaverage <- aggregate(activity$steps~activity$interval,activity,FUN=mean)
-ggplot(Dailyaverage, aes(Dailyaverage$`activity$interval`, Dailyaverage$`activity$steps`)) +geom_line(color="blue") + ylab("Daily Views")
+g<-ggplot(Dailyaverage, aes(Dailyaverage$`activity$interval`, Dailyaverage$`activity$steps`)) +geom_line(color="blue") + ylab("Daily Views")
+#extract the maxsteps corresponding index
 maxsteps<- which.max(Dailyaverage[,2])
 maxinterval<-Dailyaverage[maxsteps[1],1]
-
+#plot the maximum steps attained interval
+g<-g+geom_vline(aes(xintercept=maxinterval), colour="#BB0000", linetype="dashed")
+print(g)
 paste("The Maximum steps attained interval at :",maxinterval)
 
 ```
@@ -56,6 +63,7 @@ paste("Total Missing Values ",TotalNA)
 ```
 
 ```{r}
+#Execute the mean value insertion for the NA to reproduce the plots obeser the difference in the mean and median
 Stactivity <- activity
 Stactivity$steps <- impute(activity$steps,mean)
 TotalStepsst <- aggregate(Stactivity$steps~Stactivity$date, Stactivity,sum)
@@ -72,14 +80,17 @@ mediandiff = medianSteps-Stmediansteps
 
 ## Are there differences in activity patterns between weekdays and weekends?
 ```{r}
+#format the date so as to calculate the weekdays and weekends/
 Stactivity$date<- as.Date(Stactivity$date, "%Y-%m-%d")
 Stactivity$day <- weekdays(Stactivity$date)
+# create a new column with the weekend and weekday factor 
 Stactivity$type <- c("weekday")
 for (i in 1:nrow(Stactivity)){
         if (Stactivity$day[i] == "Saturday" || Stactivity$day[i] == "Sunday"){
     Stactivity$type[i] <- "weekend"
         }
 }
+#Plot the values on a grph to compare the weekday and weekend.
 Stactivity$type<- as.factor(Stactivity$type)
 WeekAverage<- aggregate(steps~interval+type,Stactivity,mean)
 qplot(interval,steps,data=WeekAverage,geom=c("line"),xlab="5 min intervals",ylab="steps mean", main="")+facet_wrap(~type,ncol=1)+geom_line(color="blue")
